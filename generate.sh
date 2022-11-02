@@ -1,5 +1,6 @@
 #!/bin/sh
 #
+# The whole Go API Client for Localizely is generated via this script
 # Usage example: /bin/sh ./generate.sh 1.0.0
 
 version=$1
