@@ -13,19 +13,19 @@ package localizely
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
 
-// BranchAPIApiService BranchAPIApi service
-type BranchAPIApiService service
+// BranchAPIAPIService BranchAPIAPI service
+type BranchAPIAPIService service
 
 type ApiCreateBranchRequest struct {
 	ctx context.Context
-	ApiService *BranchAPIApiService
+	ApiService *BranchAPIAPIService
 	projectId string
 	branch string
 	sourceBranch *string
@@ -49,7 +49,7 @@ CreateBranch Create a new branch
  @param branch Name of the branch to be created
  @return ApiCreateBranchRequest
 */
-func (a *BranchAPIApiService) CreateBranch(ctx context.Context, projectId string, branch string) ApiCreateBranchRequest {
+func (a *BranchAPIAPIService) CreateBranch(ctx context.Context, projectId string, branch string) ApiCreateBranchRequest {
 	return ApiCreateBranchRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -59,21 +59,21 @@ func (a *BranchAPIApiService) CreateBranch(ctx context.Context, projectId string
 }
 
 // Execute executes the request
-func (a *BranchAPIApiService) CreateBranchExecute(r ApiCreateBranchRequest) (*http.Response, error) {
+func (a *BranchAPIAPIService) CreateBranchExecute(r ApiCreateBranchRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BranchAPIApiService.CreateBranch")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "BranchAPIAPIService.CreateBranch")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/v1/projects/{project_id}/branches/{branch}"
-	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", url.PathEscape(parameterToString(r.projectId, "")), -1)
-	localVarPath = strings.Replace(localVarPath, "{"+"branch"+"}", url.PathEscape(parameterToString(r.branch, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", url.PathEscape(parameterValueToString(r.projectId, "projectId")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"branch"+"}", url.PathEscape(parameterValueToString(r.branch, "branch")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -88,7 +88,7 @@ func (a *BranchAPIApiService) CreateBranchExecute(r ApiCreateBranchRequest) (*ht
 		return nil, reportError("sourceBranch is required and must be specified")
 	}
 
-	localVarQueryParams.Add("source_branch", parameterToString(*r.sourceBranch, ""))
+	parameterAddToHeaderOrQuery(localVarQueryParams, "source_branch", r.sourceBranch, "form", "")
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
 
@@ -130,9 +130,9 @@ func (a *BranchAPIApiService) CreateBranchExecute(r ApiCreateBranchRequest) (*ht
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -149,7 +149,8 @@ func (a *BranchAPIApiService) CreateBranchExecute(r ApiCreateBranchRequest) (*ht
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-			newErr.model = v
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
@@ -159,7 +160,8 @@ func (a *BranchAPIApiService) CreateBranchExecute(r ApiCreateBranchRequest) (*ht
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-			newErr.model = v
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		return localVarHTTPResponse, newErr

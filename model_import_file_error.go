@@ -14,6 +14,9 @@ import (
 	"encoding/json"
 )
 
+// checks if the ImportFileError type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ImportFileError{}
+
 // ImportFileError struct for ImportFileError
 type ImportFileError struct {
 	Line *int32 `json:"line,omitempty"`
@@ -40,7 +43,7 @@ func NewImportFileErrorWithDefaults() *ImportFileError {
 
 // GetLine returns the Line field value if set, zero value otherwise.
 func (o *ImportFileError) GetLine() int32 {
-	if o == nil || o.Line == nil {
+	if o == nil || IsNil(o.Line) {
 		var ret int32
 		return ret
 	}
@@ -50,7 +53,7 @@ func (o *ImportFileError) GetLine() int32 {
 // GetLineOk returns a tuple with the Line field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ImportFileError) GetLineOk() (*int32, bool) {
-	if o == nil || o.Line == nil {
+	if o == nil || IsNil(o.Line) {
 		return nil, false
 	}
 	return o.Line, true
@@ -58,7 +61,7 @@ func (o *ImportFileError) GetLineOk() (*int32, bool) {
 
 // HasLine returns a boolean if a field has been set.
 func (o *ImportFileError) HasLine() bool {
-	if o != nil && o.Line != nil {
+	if o != nil && !IsNil(o.Line) {
 		return true
 	}
 
@@ -72,7 +75,7 @@ func (o *ImportFileError) SetLine(v int32) {
 
 // GetPosition returns the Position field value if set, zero value otherwise.
 func (o *ImportFileError) GetPosition() int32 {
-	if o == nil || o.Position == nil {
+	if o == nil || IsNil(o.Position) {
 		var ret int32
 		return ret
 	}
@@ -82,7 +85,7 @@ func (o *ImportFileError) GetPosition() int32 {
 // GetPositionOk returns a tuple with the Position field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ImportFileError) GetPositionOk() (*int32, bool) {
-	if o == nil || o.Position == nil {
+	if o == nil || IsNil(o.Position) {
 		return nil, false
 	}
 	return o.Position, true
@@ -90,7 +93,7 @@ func (o *ImportFileError) GetPositionOk() (*int32, bool) {
 
 // HasPosition returns a boolean if a field has been set.
 func (o *ImportFileError) HasPosition() bool {
-	if o != nil && o.Position != nil {
+	if o != nil && !IsNil(o.Position) {
 		return true
 	}
 
@@ -104,7 +107,7 @@ func (o *ImportFileError) SetPosition(v int32) {
 
 // GetErrorMessage returns the ErrorMessage field value if set, zero value otherwise.
 func (o *ImportFileError) GetErrorMessage() string {
-	if o == nil || o.ErrorMessage == nil {
+	if o == nil || IsNil(o.ErrorMessage) {
 		var ret string
 		return ret
 	}
@@ -114,7 +117,7 @@ func (o *ImportFileError) GetErrorMessage() string {
 // GetErrorMessageOk returns a tuple with the ErrorMessage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ImportFileError) GetErrorMessageOk() (*string, bool) {
-	if o == nil || o.ErrorMessage == nil {
+	if o == nil || IsNil(o.ErrorMessage) {
 		return nil, false
 	}
 	return o.ErrorMessage, true
@@ -122,7 +125,7 @@ func (o *ImportFileError) GetErrorMessageOk() (*string, bool) {
 
 // HasErrorMessage returns a boolean if a field has been set.
 func (o *ImportFileError) HasErrorMessage() bool {
-	if o != nil && o.ErrorMessage != nil {
+	if o != nil && !IsNil(o.ErrorMessage) {
 		return true
 	}
 
@@ -135,17 +138,25 @@ func (o *ImportFileError) SetErrorMessage(v string) {
 }
 
 func (o ImportFileError) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Line != nil {
-		toSerialize["line"] = o.Line
-	}
-	if o.Position != nil {
-		toSerialize["position"] = o.Position
-	}
-	if o.ErrorMessage != nil {
-		toSerialize["errorMessage"] = o.ErrorMessage
+	toSerialize,err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
 	}
 	return json.Marshal(toSerialize)
+}
+
+func (o ImportFileError) ToMap() (map[string]interface{}, error) {
+	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Line) {
+		toSerialize["line"] = o.Line
+	}
+	if !IsNil(o.Position) {
+		toSerialize["position"] = o.Position
+	}
+	if !IsNil(o.ErrorMessage) {
+		toSerialize["errorMessage"] = o.ErrorMessage
+	}
+	return toSerialize, nil
 }
 
 type NullableImportFileError struct {

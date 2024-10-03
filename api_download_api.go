@@ -13,7 +13,7 @@ package localizely
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -21,12 +21,12 @@ import (
 )
 
 
-// DownloadAPIApiService DownloadAPIApi service
-type DownloadAPIApiService service
+// DownloadAPIAPIService DownloadAPIAPI service
+type DownloadAPIAPIService service
 
 type ApiGetLocalizationFileRequest struct {
 	ctx context.Context
-	ApiService *DownloadAPIApiService
+	ApiService *DownloadAPIAPIService
 	projectId string
 	type_ *string
 	branch *string
@@ -92,7 +92,7 @@ GetLocalizationFile Download translations for a language in a specified file for
  @param projectId Project ID - Can be found on 'My projects' page
  @return ApiGetLocalizationFileRequest
 */
-func (a *DownloadAPIApiService) GetLocalizationFile(ctx context.Context, projectId string) ApiGetLocalizationFileRequest {
+func (a *DownloadAPIAPIService) GetLocalizationFile(ctx context.Context, projectId string) ApiGetLocalizationFileRequest {
 	return ApiGetLocalizationFileRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -101,20 +101,20 @@ func (a *DownloadAPIApiService) GetLocalizationFile(ctx context.Context, project
 }
 
 // Execute executes the request
-func (a *DownloadAPIApiService) GetLocalizationFileExecute(r ApiGetLocalizationFileRequest) (*http.Response, error) {
+func (a *DownloadAPIAPIService) GetLocalizationFileExecute(r ApiGetLocalizationFileRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DownloadAPIApiService.GetLocalizationFile")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "DownloadAPIAPIService.GetLocalizationFile")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/v1/projects/{project_id}/files/download"
-	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", url.PathEscape(parameterToString(r.projectId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", url.PathEscape(parameterValueToString(r.projectId, "projectId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -124,24 +124,24 @@ func (a *DownloadAPIApiService) GetLocalizationFileExecute(r ApiGetLocalizationF
 	}
 
 	if r.branch != nil {
-		localVarQueryParams.Add("branch", parameterToString(*r.branch, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "branch", r.branch, "form", "")
 	}
 	if r.langCodes != nil {
-		localVarQueryParams.Add("lang_codes", parameterToString(*r.langCodes, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "lang_codes", r.langCodes, "form", "")
 	}
-	localVarQueryParams.Add("type", parameterToString(*r.type_, ""))
+	parameterAddToHeaderOrQuery(localVarQueryParams, "type", r.type_, "form", "")
 	if r.javaPropertiesEncoding != nil {
-		localVarQueryParams.Add("java_properties_encoding", parameterToString(*r.javaPropertiesEncoding, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "java_properties_encoding", r.javaPropertiesEncoding, "form", "")
 	}
 	if r.includeTags != nil {
 		t := *r.includeTags
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				localVarQueryParams.Add("include_tags", parameterToString(s.Index(i), "multi"))
+				parameterAddToHeaderOrQuery(localVarQueryParams, "include_tags", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			localVarQueryParams.Add("include_tags", parameterToString(t, "multi"))
+			parameterAddToHeaderOrQuery(localVarQueryParams, "include_tags", t, "form", "multi")
 		}
 	}
 	if r.excludeTags != nil {
@@ -149,14 +149,17 @@ func (a *DownloadAPIApiService) GetLocalizationFileExecute(r ApiGetLocalizationF
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				localVarQueryParams.Add("exclude_tags", parameterToString(s.Index(i), "multi"))
+				parameterAddToHeaderOrQuery(localVarQueryParams, "exclude_tags", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			localVarQueryParams.Add("exclude_tags", parameterToString(t, "multi"))
+			parameterAddToHeaderOrQuery(localVarQueryParams, "exclude_tags", t, "form", "multi")
 		}
 	}
 	if r.exportEmptyAs != nil {
-		localVarQueryParams.Add("export_empty_as", parameterToString(*r.exportEmptyAs, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "export_empty_as", r.exportEmptyAs, "form", "")
+	} else {
+		var defaultValue string = "empty"
+		r.exportEmptyAs = &defaultValue
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -199,9 +202,9 @@ func (a *DownloadAPIApiService) GetLocalizationFileExecute(r ApiGetLocalizationF
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -218,7 +221,8 @@ func (a *DownloadAPIApiService) GetLocalizationFileExecute(r ApiGetLocalizationF
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-			newErr.model = v
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
@@ -228,7 +232,8 @@ func (a *DownloadAPIApiService) GetLocalizationFileExecute(r ApiGetLocalizationF
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-			newErr.model = v
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		return localVarHTTPResponse, newErr

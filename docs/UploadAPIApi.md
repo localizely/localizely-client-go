@@ -1,10 +1,10 @@
-# \UploadAPIApi
+# \UploadAPIAPI
 
 All URIs are relative to *https://api.localizely.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**ImportLocalizationFile**](UploadAPIApi.md#ImportLocalizationFile) | **Post** /v1/projects/{project_id}/files/upload | Upload translations for a language
+[**ImportLocalizationFile**](UploadAPIAPI.md#ImportLocalizationFile) | **Post** /v1/projects/{project_id}/files/upload | Upload translations for a language
 
 
 
@@ -20,30 +20,30 @@ Upload translations for a language
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "./openapi"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/localizely/localizely-client-go"
 )
 
 func main() {
-    projectId := "projectId_example" // string | Project ID - Can be found on 'My projects' page
-    langCode := "langCode_example" // string | Language to upload, specified as language code. e.g. `en`, `en_GB` or `en-GB`
-    file := os.NewFile(1234, "some_file") // *os.File | Uploading file. Supported following formats: `Flutter ARB, Android XML, iOS strings, iOS stringsdict, Angular XLF, Gettext PO, Gettext POT, Java properties, Ruby on Rails yaml, .NET resx, flat json, csv, Excel .xlsx, Excel .xls`
-    branch := "branch_example" // string | Name of the branch to upload file into. Only in case of activated branching feature. (optional)
-    overwrite := true // bool | If translation in given language should be overwritten with modified translation from uploading file. (optional) (default to false)
-    reviewed := true // bool | If uploading translations, that are added, should be marked as Reviewed. For uploading translations that are only modified it will have effect only if `overwrite` is set to `true`. (optional) (default to false)
-    tagAdded := []string{"Inner_example"} // []string | Optional list of tags to add to new translations from uploading file. <br><br>Multiple tags can be defined in a following way: `&tag_added_keys=NEW&tag_added_keys=NEW_SPRINT05` (optional)
-    tagUpdated := []string{"Inner_example"} // []string | Optional list of tags to add to updated translations from uploading file. <br><br>Multiple tags can be defined in a following way: `&tag_updated_keys=UPDATED&tag_updated_keys=UPDATED_SPRINT05` (optional)
-    tagRemoved := []string{"Inner_example"} // []string | Optional list of tags to add to removed translations from uploading file. <br><br>Multiple tags can be defined in a following way: `&tag_removed_keys=REMOVED&tag_removed_keys=REMOVED_SPRINT05` (optional)
+	projectId := "projectId_example" // string | Project ID - Can be found on 'My projects' page
+	langCode := "langCode_example" // string | Language to upload, specified as language code. e.g. `en`, `en_GB` or `en-GB`
+	file := os.NewFile(1234, "some_file") // *os.File | Uploading file. Supported following formats: `Flutter ARB, Android XML, iOS strings, iOS stringsdict, Angular XLF, Gettext PO, Gettext POT, Java properties, Ruby on Rails yaml, .NET resx, flat json, csv, Excel .xlsx, Excel .xls`
+	branch := "branch_example" // string | Name of the branch to upload file into. Only in case of activated branching feature. (optional)
+	overwrite := true // bool | If translation in given language should be overwritten with modified translation from uploading file. (optional) (default to false)
+	reviewed := true // bool | If uploading translations, that are added, should be marked as Reviewed. For uploading translations that are only modified it will have effect only if `overwrite` is set to `true`. (optional) (default to false)
+	tagAdded := []string{"Inner_example"} // []string | Optional list of tags to add to new translations from uploading file. <br><br>Multiple tags can be defined in a following way: `&tag_added_keys=NEW&tag_added_keys=NEW_SPRINT05` (optional)
+	tagUpdated := []string{"Inner_example"} // []string | Optional list of tags to add to updated translations from uploading file. <br><br>Multiple tags can be defined in a following way: `&tag_updated_keys=UPDATED&tag_updated_keys=UPDATED_SPRINT05` (optional)
+	tagRemoved := []string{"Inner_example"} // []string | Optional list of tags to add to removed translations from uploading file. <br><br>Multiple tags can be defined in a following way: `&tag_removed_keys=REMOVED&tag_removed_keys=REMOVED_SPRINT05` (optional)
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.UploadAPIApi.ImportLocalizationFile(context.Background(), projectId).LangCode(langCode).File(file).Branch(branch).Overwrite(overwrite).Reviewed(reviewed).TagAdded(tagAdded).TagUpdated(tagUpdated).TagRemoved(tagRemoved).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `UploadAPIApi.ImportLocalizationFile``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	r, err := apiClient.UploadAPIAPI.ImportLocalizationFile(context.Background(), projectId).LangCode(langCode).File(file).Branch(branch).Overwrite(overwrite).Reviewed(reviewed).TagAdded(tagAdded).TagUpdated(tagUpdated).TagRemoved(tagRemoved).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `UploadAPIAPI.ImportLocalizationFile``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
 }
 ```
 

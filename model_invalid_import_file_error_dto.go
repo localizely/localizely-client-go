@@ -14,6 +14,9 @@ import (
 	"encoding/json"
 )
 
+// checks if the InvalidImportFileErrorDto type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &InvalidImportFileErrorDto{}
+
 // InvalidImportFileErrorDto struct for InvalidImportFileErrorDto
 type InvalidImportFileErrorDto struct {
 	ErrorCode *string `json:"errorCode,omitempty"`
@@ -41,7 +44,7 @@ func NewInvalidImportFileErrorDtoWithDefaults() *InvalidImportFileErrorDto {
 
 // GetErrorCode returns the ErrorCode field value if set, zero value otherwise.
 func (o *InvalidImportFileErrorDto) GetErrorCode() string {
-	if o == nil || o.ErrorCode == nil {
+	if o == nil || IsNil(o.ErrorCode) {
 		var ret string
 		return ret
 	}
@@ -51,7 +54,7 @@ func (o *InvalidImportFileErrorDto) GetErrorCode() string {
 // GetErrorCodeOk returns a tuple with the ErrorCode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *InvalidImportFileErrorDto) GetErrorCodeOk() (*string, bool) {
-	if o == nil || o.ErrorCode == nil {
+	if o == nil || IsNil(o.ErrorCode) {
 		return nil, false
 	}
 	return o.ErrorCode, true
@@ -59,7 +62,7 @@ func (o *InvalidImportFileErrorDto) GetErrorCodeOk() (*string, bool) {
 
 // HasErrorCode returns a boolean if a field has been set.
 func (o *InvalidImportFileErrorDto) HasErrorCode() bool {
-	if o != nil && o.ErrorCode != nil {
+	if o != nil && !IsNil(o.ErrorCode) {
 		return true
 	}
 
@@ -73,7 +76,7 @@ func (o *InvalidImportFileErrorDto) SetErrorCode(v string) {
 
 // GetErrorMessage returns the ErrorMessage field value if set, zero value otherwise.
 func (o *InvalidImportFileErrorDto) GetErrorMessage() string {
-	if o == nil || o.ErrorMessage == nil {
+	if o == nil || IsNil(o.ErrorMessage) {
 		var ret string
 		return ret
 	}
@@ -83,7 +86,7 @@ func (o *InvalidImportFileErrorDto) GetErrorMessage() string {
 // GetErrorMessageOk returns a tuple with the ErrorMessage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *InvalidImportFileErrorDto) GetErrorMessageOk() (*string, bool) {
-	if o == nil || o.ErrorMessage == nil {
+	if o == nil || IsNil(o.ErrorMessage) {
 		return nil, false
 	}
 	return o.ErrorMessage, true
@@ -91,7 +94,7 @@ func (o *InvalidImportFileErrorDto) GetErrorMessageOk() (*string, bool) {
 
 // HasErrorMessage returns a boolean if a field has been set.
 func (o *InvalidImportFileErrorDto) HasErrorMessage() bool {
-	if o != nil && o.ErrorMessage != nil {
+	if o != nil && !IsNil(o.ErrorMessage) {
 		return true
 	}
 
@@ -105,7 +108,7 @@ func (o *InvalidImportFileErrorDto) SetErrorMessage(v string) {
 
 // GetErrorData returns the ErrorData field value if set, zero value otherwise.
 func (o *InvalidImportFileErrorDto) GetErrorData() map[string]map[string]interface{} {
-	if o == nil || o.ErrorData == nil {
+	if o == nil || IsNil(o.ErrorData) {
 		var ret map[string]map[string]interface{}
 		return ret
 	}
@@ -115,15 +118,15 @@ func (o *InvalidImportFileErrorDto) GetErrorData() map[string]map[string]interfa
 // GetErrorDataOk returns a tuple with the ErrorData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *InvalidImportFileErrorDto) GetErrorDataOk() (map[string]map[string]interface{}, bool) {
-	if o == nil || o.ErrorData == nil {
-		return nil, false
+	if o == nil || IsNil(o.ErrorData) {
+		return map[string]map[string]interface{}{}, false
 	}
 	return o.ErrorData, true
 }
 
 // HasErrorData returns a boolean if a field has been set.
 func (o *InvalidImportFileErrorDto) HasErrorData() bool {
-	if o != nil && o.ErrorData != nil {
+	if o != nil && !IsNil(o.ErrorData) {
 		return true
 	}
 
@@ -137,7 +140,7 @@ func (o *InvalidImportFileErrorDto) SetErrorData(v map[string]map[string]interfa
 
 // GetErrors returns the Errors field value if set, zero value otherwise.
 func (o *InvalidImportFileErrorDto) GetErrors() []ImportFileError {
-	if o == nil || o.Errors == nil {
+	if o == nil || IsNil(o.Errors) {
 		var ret []ImportFileError
 		return ret
 	}
@@ -147,7 +150,7 @@ func (o *InvalidImportFileErrorDto) GetErrors() []ImportFileError {
 // GetErrorsOk returns a tuple with the Errors field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *InvalidImportFileErrorDto) GetErrorsOk() ([]ImportFileError, bool) {
-	if o == nil || o.Errors == nil {
+	if o == nil || IsNil(o.Errors) {
 		return nil, false
 	}
 	return o.Errors, true
@@ -155,7 +158,7 @@ func (o *InvalidImportFileErrorDto) GetErrorsOk() ([]ImportFileError, bool) {
 
 // HasErrors returns a boolean if a field has been set.
 func (o *InvalidImportFileErrorDto) HasErrors() bool {
-	if o != nil && o.Errors != nil {
+	if o != nil && !IsNil(o.Errors) {
 		return true
 	}
 
@@ -168,20 +171,28 @@ func (o *InvalidImportFileErrorDto) SetErrors(v []ImportFileError) {
 }
 
 func (o InvalidImportFileErrorDto) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.ErrorCode != nil {
-		toSerialize["errorCode"] = o.ErrorCode
-	}
-	if o.ErrorMessage != nil {
-		toSerialize["errorMessage"] = o.ErrorMessage
-	}
-	if o.ErrorData != nil {
-		toSerialize["errorData"] = o.ErrorData
-	}
-	if o.Errors != nil {
-		toSerialize["errors"] = o.Errors
+	toSerialize,err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
 	}
 	return json.Marshal(toSerialize)
+}
+
+func (o InvalidImportFileErrorDto) ToMap() (map[string]interface{}, error) {
+	toSerialize := map[string]interface{}{}
+	if !IsNil(o.ErrorCode) {
+		toSerialize["errorCode"] = o.ErrorCode
+	}
+	if !IsNil(o.ErrorMessage) {
+		toSerialize["errorMessage"] = o.ErrorMessage
+	}
+	if !IsNil(o.ErrorData) {
+		toSerialize["errorData"] = o.ErrorData
+	}
+	if !IsNil(o.Errors) {
+		toSerialize["errors"] = o.Errors
+	}
+	return toSerialize, nil
 }
 
 type NullableInvalidImportFileErrorDto struct {

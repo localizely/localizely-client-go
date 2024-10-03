@@ -14,6 +14,9 @@ import (
 	"encoding/json"
 )
 
+// checks if the ProjectStatusDto type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ProjectStatusDto{}
+
 // ProjectStatusDto struct for ProjectStatusDto
 type ProjectStatusDto struct {
 	// Total number of string keys in the project
@@ -43,7 +46,7 @@ func NewProjectStatusDtoWithDefaults() *ProjectStatusDto {
 
 // GetStrings returns the Strings field value if set, zero value otherwise.
 func (o *ProjectStatusDto) GetStrings() int32 {
-	if o == nil || o.Strings == nil {
+	if o == nil || IsNil(o.Strings) {
 		var ret int32
 		return ret
 	}
@@ -53,7 +56,7 @@ func (o *ProjectStatusDto) GetStrings() int32 {
 // GetStringsOk returns a tuple with the Strings field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ProjectStatusDto) GetStringsOk() (*int32, bool) {
-	if o == nil || o.Strings == nil {
+	if o == nil || IsNil(o.Strings) {
 		return nil, false
 	}
 	return o.Strings, true
@@ -61,7 +64,7 @@ func (o *ProjectStatusDto) GetStringsOk() (*int32, bool) {
 
 // HasStrings returns a boolean if a field has been set.
 func (o *ProjectStatusDto) HasStrings() bool {
-	if o != nil && o.Strings != nil {
+	if o != nil && !IsNil(o.Strings) {
 		return true
 	}
 
@@ -75,7 +78,7 @@ func (o *ProjectStatusDto) SetStrings(v int32) {
 
 // GetReviewedProgress returns the ReviewedProgress field value if set, zero value otherwise.
 func (o *ProjectStatusDto) GetReviewedProgress() int32 {
-	if o == nil || o.ReviewedProgress == nil {
+	if o == nil || IsNil(o.ReviewedProgress) {
 		var ret int32
 		return ret
 	}
@@ -85,7 +88,7 @@ func (o *ProjectStatusDto) GetReviewedProgress() int32 {
 // GetReviewedProgressOk returns a tuple with the ReviewedProgress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ProjectStatusDto) GetReviewedProgressOk() (*int32, bool) {
-	if o == nil || o.ReviewedProgress == nil {
+	if o == nil || IsNil(o.ReviewedProgress) {
 		return nil, false
 	}
 	return o.ReviewedProgress, true
@@ -93,7 +96,7 @@ func (o *ProjectStatusDto) GetReviewedProgressOk() (*int32, bool) {
 
 // HasReviewedProgress returns a boolean if a field has been set.
 func (o *ProjectStatusDto) HasReviewedProgress() bool {
-	if o != nil && o.ReviewedProgress != nil {
+	if o != nil && !IsNil(o.ReviewedProgress) {
 		return true
 	}
 
@@ -107,7 +110,7 @@ func (o *ProjectStatusDto) SetReviewedProgress(v int32) {
 
 // GetLanguages returns the Languages field value if set, zero value otherwise.
 func (o *ProjectStatusDto) GetLanguages() []ProjectLocaleStatsDto {
-	if o == nil || o.Languages == nil {
+	if o == nil || IsNil(o.Languages) {
 		var ret []ProjectLocaleStatsDto
 		return ret
 	}
@@ -117,7 +120,7 @@ func (o *ProjectStatusDto) GetLanguages() []ProjectLocaleStatsDto {
 // GetLanguagesOk returns a tuple with the Languages field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ProjectStatusDto) GetLanguagesOk() ([]ProjectLocaleStatsDto, bool) {
-	if o == nil || o.Languages == nil {
+	if o == nil || IsNil(o.Languages) {
 		return nil, false
 	}
 	return o.Languages, true
@@ -125,7 +128,7 @@ func (o *ProjectStatusDto) GetLanguagesOk() ([]ProjectLocaleStatsDto, bool) {
 
 // HasLanguages returns a boolean if a field has been set.
 func (o *ProjectStatusDto) HasLanguages() bool {
-	if o != nil && o.Languages != nil {
+	if o != nil && !IsNil(o.Languages) {
 		return true
 	}
 
@@ -138,17 +141,25 @@ func (o *ProjectStatusDto) SetLanguages(v []ProjectLocaleStatsDto) {
 }
 
 func (o ProjectStatusDto) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Strings != nil {
-		toSerialize["strings"] = o.Strings
-	}
-	if o.ReviewedProgress != nil {
-		toSerialize["reviewedProgress"] = o.ReviewedProgress
-	}
-	if o.Languages != nil {
-		toSerialize["languages"] = o.Languages
+	toSerialize,err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
 	}
 	return json.Marshal(toSerialize)
+}
+
+func (o ProjectStatusDto) ToMap() (map[string]interface{}, error) {
+	toSerialize := map[string]interface{}{}
+	if !IsNil(o.Strings) {
+		toSerialize["strings"] = o.Strings
+	}
+	if !IsNil(o.ReviewedProgress) {
+		toSerialize["reviewedProgress"] = o.ReviewedProgress
+	}
+	if !IsNil(o.Languages) {
+		toSerialize["languages"] = o.Languages
+	}
+	return toSerialize, nil
 }
 
 type NullableProjectStatusDto struct {

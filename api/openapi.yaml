@@ -19,11 +19,6 @@ info:
 servers:
 - description: Generated server url
   url: https://api.localizely.com
-tags:
-- name: Download API
-- name: Branch API
-- name: Translation Status API
-- name: Upload API
 paths:
   /v1/projects/{project_id}/files/upload:
     post:
@@ -371,6 +366,11 @@ paths:
 components:
   schemas:
     ErrorDto:
+      example:
+        errorMessage: errorMessage
+        errorCode: already_exists
+        errorData:
+          key: "{}"
       properties:
         errorCode:
           enum:
@@ -380,6 +380,8 @@ components:
           - bad_request
           - not_configured
           - bad_captcha
+          - bad_turnstile
+          - bad_url
           - confirmation_invalid
           - forbidden_email
           - main_locale_invalid
@@ -444,6 +446,15 @@ components:
           - gitlab_config_file_missing
           - gitlab_config_file_invalid
           - gitlab_push_no_changes
+          - bitbucket_not_supported
+          - bitbucket_token_invalid
+          - bitbucket_token_scope_invalid
+          - bitbucket_url_invalid
+          - bitbucket_branch_invalid
+          - bitbucket_repo_invalid
+          - bitbucket_config_file_missing
+          - bitbucket_config_file_invalid
+          - bitbucket_push_no_changes
           - aws_s3_not_supported
           - aws_s3_credentials_invalid
           - aws_s3_permissions_invalid
@@ -462,6 +473,10 @@ components:
           type: object
       type: object
     ImportFileError:
+      example:
+        line: 0
+        errorMessage: errorMessage
+        position: 6
       properties:
         line:
           format: int32
@@ -473,6 +488,18 @@ components:
           type: string
       type: object
     InvalidImportFileErrorDto:
+      example:
+        errorMessage: errorMessage
+        errorCode: already_exists
+        errorData:
+          key: "{}"
+        errors:
+        - line: 0
+          errorMessage: errorMessage
+          position: 6
+        - line: 0
+          errorMessage: errorMessage
+          position: 6
       properties:
         errorCode:
           enum:
@@ -482,6 +509,8 @@ components:
           - bad_request
           - not_configured
           - bad_captcha
+          - bad_turnstile
+          - bad_url
           - confirmation_invalid
           - forbidden_email
           - main_locale_invalid
@@ -546,6 +575,15 @@ components:
           - gitlab_config_file_missing
           - gitlab_config_file_invalid
           - gitlab_push_no_changes
+          - bitbucket_not_supported
+          - bitbucket_token_invalid
+          - bitbucket_token_scope_invalid
+          - bitbucket_url_invalid
+          - bitbucket_branch_invalid
+          - bitbucket_repo_invalid
+          - bitbucket_config_file_missing
+          - bitbucket_config_file_invalid
+          - bitbucket_push_no_changes
           - aws_s3_not_supported
           - aws_s3_credentials_invalid
           - aws_s3_permissions_invalid

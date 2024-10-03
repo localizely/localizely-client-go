@@ -1,10 +1,10 @@
-# \BranchAPIApi
+# \BranchAPIAPI
 
 All URIs are relative to *https://api.localizely.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**CreateBranch**](BranchAPIApi.md#CreateBranch) | **Post** /v1/projects/{project_id}/branches/{branch} | Create a new branch
+[**CreateBranch**](BranchAPIAPI.md#CreateBranch) | **Post** /v1/projects/{project_id}/branches/{branch} | Create a new branch
 
 
 
@@ -20,24 +20,24 @@ Create a new branch
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "./openapi"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/localizely/localizely-client-go"
 )
 
 func main() {
-    projectId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | Project ID - Can be found on 'My projects' page
-    branch := "branch_example" // string | Name of the branch to be created
-    sourceBranch := "sourceBranch_example" // string | Name of the source branch from which new branch will be created
+	projectId := "38400000-8cf0-11bd-b23e-10b96e4ef00d" // string | Project ID - Can be found on 'My projects' page
+	branch := "branch_example" // string | Name of the branch to be created
+	sourceBranch := "sourceBranch_example" // string | Name of the source branch from which new branch will be created
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.BranchAPIApi.CreateBranch(context.Background(), projectId, branch).SourceBranch(sourceBranch).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `BranchAPIApi.CreateBranch``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	r, err := apiClient.BranchAPIAPI.CreateBranch(context.Background(), projectId, branch).SourceBranch(sourceBranch).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `BranchAPIAPI.CreateBranch``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
 }
 ```
 

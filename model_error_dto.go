@@ -14,6 +14,9 @@ import (
 	"encoding/json"
 )
 
+// checks if the ErrorDto type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ErrorDto{}
+
 // ErrorDto struct for ErrorDto
 type ErrorDto struct {
 	ErrorCode *string `json:"errorCode,omitempty"`
@@ -40,7 +43,7 @@ func NewErrorDtoWithDefaults() *ErrorDto {
 
 // GetErrorCode returns the ErrorCode field value if set, zero value otherwise.
 func (o *ErrorDto) GetErrorCode() string {
-	if o == nil || o.ErrorCode == nil {
+	if o == nil || IsNil(o.ErrorCode) {
 		var ret string
 		return ret
 	}
@@ -50,7 +53,7 @@ func (o *ErrorDto) GetErrorCode() string {
 // GetErrorCodeOk returns a tuple with the ErrorCode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ErrorDto) GetErrorCodeOk() (*string, bool) {
-	if o == nil || o.ErrorCode == nil {
+	if o == nil || IsNil(o.ErrorCode) {
 		return nil, false
 	}
 	return o.ErrorCode, true
@@ -58,7 +61,7 @@ func (o *ErrorDto) GetErrorCodeOk() (*string, bool) {
 
 // HasErrorCode returns a boolean if a field has been set.
 func (o *ErrorDto) HasErrorCode() bool {
-	if o != nil && o.ErrorCode != nil {
+	if o != nil && !IsNil(o.ErrorCode) {
 		return true
 	}
 
@@ -72,7 +75,7 @@ func (o *ErrorDto) SetErrorCode(v string) {
 
 // GetErrorMessage returns the ErrorMessage field value if set, zero value otherwise.
 func (o *ErrorDto) GetErrorMessage() string {
-	if o == nil || o.ErrorMessage == nil {
+	if o == nil || IsNil(o.ErrorMessage) {
 		var ret string
 		return ret
 	}
@@ -82,7 +85,7 @@ func (o *ErrorDto) GetErrorMessage() string {
 // GetErrorMessageOk returns a tuple with the ErrorMessage field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ErrorDto) GetErrorMessageOk() (*string, bool) {
-	if o == nil || o.ErrorMessage == nil {
+	if o == nil || IsNil(o.ErrorMessage) {
 		return nil, false
 	}
 	return o.ErrorMessage, true
@@ -90,7 +93,7 @@ func (o *ErrorDto) GetErrorMessageOk() (*string, bool) {
 
 // HasErrorMessage returns a boolean if a field has been set.
 func (o *ErrorDto) HasErrorMessage() bool {
-	if o != nil && o.ErrorMessage != nil {
+	if o != nil && !IsNil(o.ErrorMessage) {
 		return true
 	}
 
@@ -104,7 +107,7 @@ func (o *ErrorDto) SetErrorMessage(v string) {
 
 // GetErrorData returns the ErrorData field value if set, zero value otherwise.
 func (o *ErrorDto) GetErrorData() map[string]map[string]interface{} {
-	if o == nil || o.ErrorData == nil {
+	if o == nil || IsNil(o.ErrorData) {
 		var ret map[string]map[string]interface{}
 		return ret
 	}
@@ -114,15 +117,15 @@ func (o *ErrorDto) GetErrorData() map[string]map[string]interface{} {
 // GetErrorDataOk returns a tuple with the ErrorData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ErrorDto) GetErrorDataOk() (map[string]map[string]interface{}, bool) {
-	if o == nil || o.ErrorData == nil {
-		return nil, false
+	if o == nil || IsNil(o.ErrorData) {
+		return map[string]map[string]interface{}{}, false
 	}
 	return o.ErrorData, true
 }
 
 // HasErrorData returns a boolean if a field has been set.
 func (o *ErrorDto) HasErrorData() bool {
-	if o != nil && o.ErrorData != nil {
+	if o != nil && !IsNil(o.ErrorData) {
 		return true
 	}
 
@@ -135,17 +138,25 @@ func (o *ErrorDto) SetErrorData(v map[string]map[string]interface{}) {
 }
 
 func (o ErrorDto) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.ErrorCode != nil {
-		toSerialize["errorCode"] = o.ErrorCode
-	}
-	if o.ErrorMessage != nil {
-		toSerialize["errorMessage"] = o.ErrorMessage
-	}
-	if o.ErrorData != nil {
-		toSerialize["errorData"] = o.ErrorData
+	toSerialize,err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
 	}
 	return json.Marshal(toSerialize)
+}
+
+func (o ErrorDto) ToMap() (map[string]interface{}, error) {
+	toSerialize := map[string]interface{}{}
+	if !IsNil(o.ErrorCode) {
+		toSerialize["errorCode"] = o.ErrorCode
+	}
+	if !IsNil(o.ErrorMessage) {
+		toSerialize["errorMessage"] = o.ErrorMessage
+	}
+	if !IsNil(o.ErrorData) {
+		toSerialize["errorData"] = o.ErrorData
+	}
+	return toSerialize, nil
 }
 
 type NullableErrorDto struct {

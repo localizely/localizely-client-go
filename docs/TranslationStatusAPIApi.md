@@ -1,10 +1,10 @@
-# \TranslationStatusAPIApi
+# \TranslationStatusAPIAPI
 
 All URIs are relative to *https://api.localizely.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetTranslationStatus**](TranslationStatusAPIApi.md#GetTranslationStatus) | **Get** /v1/projects/{project_id}/status | Get Translation Status for the project
+[**GetTranslationStatus**](TranslationStatusAPIAPI.md#GetTranslationStatus) | **Get** /v1/projects/{project_id}/status | Get Translation Status for the project
 
 
 
@@ -20,25 +20,25 @@ Get Translation Status for the project
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "./openapi"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/localizely/localizely-client-go"
 )
 
 func main() {
-    projectId := "projectId_example" // string | Project ID - Can be found on 'My projects' page
-    branch := "branch_example" // string | Name of the branch to get translation status for. Only in case of activated branching feature. (optional)
+	projectId := "projectId_example" // string | Project ID - Can be found on 'My projects' page
+	branch := "branch_example" // string | Name of the branch to get translation status for. Only in case of activated branching feature. (optional)
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.TranslationStatusAPIApi.GetTranslationStatus(context.Background(), projectId).Branch(branch).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `TranslationStatusAPIApi.GetTranslationStatus``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
-    // response from `GetTranslationStatus`: ProjectStatusDto
-    fmt.Fprintf(os.Stdout, "Response from `TranslationStatusAPIApi.GetTranslationStatus`: %v\n", resp)
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.TranslationStatusAPIAPI.GetTranslationStatus(context.Background(), projectId).Branch(branch).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `TranslationStatusAPIAPI.GetTranslationStatus``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `GetTranslationStatus`: ProjectStatusDto
+	fmt.Fprintf(os.Stdout, "Response from `TranslationStatusAPIAPI.GetTranslationStatus`: %v\n", resp)
 }
 ```
 

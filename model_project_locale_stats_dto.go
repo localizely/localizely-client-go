@@ -14,6 +14,9 @@ import (
 	"encoding/json"
 )
 
+// checks if the ProjectLocaleStatsDto type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ProjectLocaleStatsDto{}
+
 // ProjectLocaleStatsDto Translation status per language
 type ProjectLocaleStatsDto struct {
 	// Language code (ie `en` or `en-US`)
@@ -47,7 +50,7 @@ func NewProjectLocaleStatsDtoWithDefaults() *ProjectLocaleStatsDto {
 
 // GetLangCode returns the LangCode field value if set, zero value otherwise.
 func (o *ProjectLocaleStatsDto) GetLangCode() string {
-	if o == nil || o.LangCode == nil {
+	if o == nil || IsNil(o.LangCode) {
 		var ret string
 		return ret
 	}
@@ -57,7 +60,7 @@ func (o *ProjectLocaleStatsDto) GetLangCode() string {
 // GetLangCodeOk returns a tuple with the LangCode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ProjectLocaleStatsDto) GetLangCodeOk() (*string, bool) {
-	if o == nil || o.LangCode == nil {
+	if o == nil || IsNil(o.LangCode) {
 		return nil, false
 	}
 	return o.LangCode, true
@@ -65,7 +68,7 @@ func (o *ProjectLocaleStatsDto) GetLangCodeOk() (*string, bool) {
 
 // HasLangCode returns a boolean if a field has been set.
 func (o *ProjectLocaleStatsDto) HasLangCode() bool {
-	if o != nil && o.LangCode != nil {
+	if o != nil && !IsNil(o.LangCode) {
 		return true
 	}
 
@@ -79,7 +82,7 @@ func (o *ProjectLocaleStatsDto) SetLangCode(v string) {
 
 // GetLangName returns the LangName field value if set, zero value otherwise.
 func (o *ProjectLocaleStatsDto) GetLangName() string {
-	if o == nil || o.LangName == nil {
+	if o == nil || IsNil(o.LangName) {
 		var ret string
 		return ret
 	}
@@ -89,7 +92,7 @@ func (o *ProjectLocaleStatsDto) GetLangName() string {
 // GetLangNameOk returns a tuple with the LangName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ProjectLocaleStatsDto) GetLangNameOk() (*string, bool) {
-	if o == nil || o.LangName == nil {
+	if o == nil || IsNil(o.LangName) {
 		return nil, false
 	}
 	return o.LangName, true
@@ -97,7 +100,7 @@ func (o *ProjectLocaleStatsDto) GetLangNameOk() (*string, bool) {
 
 // HasLangName returns a boolean if a field has been set.
 func (o *ProjectLocaleStatsDto) HasLangName() bool {
-	if o != nil && o.LangName != nil {
+	if o != nil && !IsNil(o.LangName) {
 		return true
 	}
 
@@ -111,7 +114,7 @@ func (o *ProjectLocaleStatsDto) SetLangName(v string) {
 
 // GetStrings returns the Strings field value if set, zero value otherwise.
 func (o *ProjectLocaleStatsDto) GetStrings() int32 {
-	if o == nil || o.Strings == nil {
+	if o == nil || IsNil(o.Strings) {
 		var ret int32
 		return ret
 	}
@@ -121,7 +124,7 @@ func (o *ProjectLocaleStatsDto) GetStrings() int32 {
 // GetStringsOk returns a tuple with the Strings field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ProjectLocaleStatsDto) GetStringsOk() (*int32, bool) {
-	if o == nil || o.Strings == nil {
+	if o == nil || IsNil(o.Strings) {
 		return nil, false
 	}
 	return o.Strings, true
@@ -129,7 +132,7 @@ func (o *ProjectLocaleStatsDto) GetStringsOk() (*int32, bool) {
 
 // HasStrings returns a boolean if a field has been set.
 func (o *ProjectLocaleStatsDto) HasStrings() bool {
-	if o != nil && o.Strings != nil {
+	if o != nil && !IsNil(o.Strings) {
 		return true
 	}
 
@@ -143,7 +146,7 @@ func (o *ProjectLocaleStatsDto) SetStrings(v int32) {
 
 // GetReviewed returns the Reviewed field value if set, zero value otherwise.
 func (o *ProjectLocaleStatsDto) GetReviewed() int32 {
-	if o == nil || o.Reviewed == nil {
+	if o == nil || IsNil(o.Reviewed) {
 		var ret int32
 		return ret
 	}
@@ -153,7 +156,7 @@ func (o *ProjectLocaleStatsDto) GetReviewed() int32 {
 // GetReviewedOk returns a tuple with the Reviewed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ProjectLocaleStatsDto) GetReviewedOk() (*int32, bool) {
-	if o == nil || o.Reviewed == nil {
+	if o == nil || IsNil(o.Reviewed) {
 		return nil, false
 	}
 	return o.Reviewed, true
@@ -161,7 +164,7 @@ func (o *ProjectLocaleStatsDto) GetReviewedOk() (*int32, bool) {
 
 // HasReviewed returns a boolean if a field has been set.
 func (o *ProjectLocaleStatsDto) HasReviewed() bool {
-	if o != nil && o.Reviewed != nil {
+	if o != nil && !IsNil(o.Reviewed) {
 		return true
 	}
 
@@ -175,7 +178,7 @@ func (o *ProjectLocaleStatsDto) SetReviewed(v int32) {
 
 // GetReviewedProgress returns the ReviewedProgress field value if set, zero value otherwise.
 func (o *ProjectLocaleStatsDto) GetReviewedProgress() int32 {
-	if o == nil || o.ReviewedProgress == nil {
+	if o == nil || IsNil(o.ReviewedProgress) {
 		var ret int32
 		return ret
 	}
@@ -185,7 +188,7 @@ func (o *ProjectLocaleStatsDto) GetReviewedProgress() int32 {
 // GetReviewedProgressOk returns a tuple with the ReviewedProgress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ProjectLocaleStatsDto) GetReviewedProgressOk() (*int32, bool) {
-	if o == nil || o.ReviewedProgress == nil {
+	if o == nil || IsNil(o.ReviewedProgress) {
 		return nil, false
 	}
 	return o.ReviewedProgress, true
@@ -193,7 +196,7 @@ func (o *ProjectLocaleStatsDto) GetReviewedProgressOk() (*int32, bool) {
 
 // HasReviewedProgress returns a boolean if a field has been set.
 func (o *ProjectLocaleStatsDto) HasReviewedProgress() bool {
-	if o != nil && o.ReviewedProgress != nil {
+	if o != nil && !IsNil(o.ReviewedProgress) {
 		return true
 	}
 
@@ -206,23 +209,31 @@ func (o *ProjectLocaleStatsDto) SetReviewedProgress(v int32) {
 }
 
 func (o ProjectLocaleStatsDto) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.LangCode != nil {
-		toSerialize["langCode"] = o.LangCode
-	}
-	if o.LangName != nil {
-		toSerialize["langName"] = o.LangName
-	}
-	if o.Strings != nil {
-		toSerialize["strings"] = o.Strings
-	}
-	if o.Reviewed != nil {
-		toSerialize["reviewed"] = o.Reviewed
-	}
-	if o.ReviewedProgress != nil {
-		toSerialize["reviewedProgress"] = o.ReviewedProgress
+	toSerialize,err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
 	}
 	return json.Marshal(toSerialize)
+}
+
+func (o ProjectLocaleStatsDto) ToMap() (map[string]interface{}, error) {
+	toSerialize := map[string]interface{}{}
+	if !IsNil(o.LangCode) {
+		toSerialize["langCode"] = o.LangCode
+	}
+	if !IsNil(o.LangName) {
+		toSerialize["langName"] = o.LangName
+	}
+	if !IsNil(o.Strings) {
+		toSerialize["strings"] = o.Strings
+	}
+	if !IsNil(o.Reviewed) {
+		toSerialize["reviewed"] = o.Reviewed
+	}
+	if !IsNil(o.ReviewedProgress) {
+		toSerialize["reviewedProgress"] = o.ReviewedProgress
+	}
+	return toSerialize, nil
 }
 
 type NullableProjectLocaleStatsDto struct {

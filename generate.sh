@@ -10,7 +10,7 @@ if [ "$version" = "" ]; then
   exit
 fi
 
-openapi-generator-cli generate \
+openapi-generator generate \
   -g go \
   -i https://api.localizely.com/api-docs \
   --git-user-id localizely \

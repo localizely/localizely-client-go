@@ -13,7 +13,7 @@ package localizely
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -22,15 +22,15 @@ import (
 )
 
 
-// UploadAPIApiService UploadAPIApi service
-type UploadAPIApiService service
+// UploadAPIAPIService UploadAPIAPI service
+type UploadAPIAPIService service
 
 type ApiImportLocalizationFileRequest struct {
 	ctx context.Context
-	ApiService *UploadAPIApiService
+	ApiService *UploadAPIAPIService
 	projectId string
 	langCode *string
-	file **os.File
+	file *os.File
 	branch *string
 	overwrite *bool
 	reviewed *bool
@@ -47,7 +47,7 @@ func (r ApiImportLocalizationFileRequest) LangCode(langCode string) ApiImportLoc
 
 // Uploading file. Supported following formats: &#x60;Flutter ARB, Android XML, iOS strings, iOS stringsdict, Angular XLF, Gettext PO, Gettext POT, Java properties, Ruby on Rails yaml, .NET resx, flat json, csv, Excel .xlsx, Excel .xls&#x60;
 func (r ApiImportLocalizationFileRequest) File(file *os.File) ApiImportLocalizationFileRequest {
-	r.file = &file
+	r.file = file
 	return r
 }
 
@@ -98,7 +98,7 @@ ImportLocalizationFile Upload translations for a language
  @param projectId Project ID - Can be found on 'My projects' page
  @return ApiImportLocalizationFileRequest
 */
-func (a *UploadAPIApiService) ImportLocalizationFile(ctx context.Context, projectId string) ApiImportLocalizationFileRequest {
+func (a *UploadAPIAPIService) ImportLocalizationFile(ctx context.Context, projectId string) ApiImportLocalizationFileRequest {
 	return ApiImportLocalizationFileRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -107,20 +107,20 @@ func (a *UploadAPIApiService) ImportLocalizationFile(ctx context.Context, projec
 }
 
 // Execute executes the request
-func (a *UploadAPIApiService) ImportLocalizationFileExecute(r ApiImportLocalizationFileRequest) (*http.Response, error) {
+func (a *UploadAPIAPIService) ImportLocalizationFileExecute(r ApiImportLocalizationFileRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodPost
 		localVarPostBody     interface{}
 		formFiles            []formFile
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UploadAPIApiService.ImportLocalizationFile")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UploadAPIAPIService.ImportLocalizationFile")
 	if err != nil {
 		return nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/v1/projects/{project_id}/files/upload"
-	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", url.PathEscape(parameterToString(r.projectId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", url.PathEscape(parameterValueToString(r.projectId, "projectId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -133,24 +133,30 @@ func (a *UploadAPIApiService) ImportLocalizationFileExecute(r ApiImportLocalizat
 	}
 
 	if r.branch != nil {
-		localVarQueryParams.Add("branch", parameterToString(*r.branch, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "branch", r.branch, "form", "")
 	}
-	localVarQueryParams.Add("lang_code", parameterToString(*r.langCode, ""))
+	parameterAddToHeaderOrQuery(localVarQueryParams, "lang_code", r.langCode, "form", "")
 	if r.overwrite != nil {
-		localVarQueryParams.Add("overwrite", parameterToString(*r.overwrite, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "overwrite", r.overwrite, "form", "")
+	} else {
+		var defaultValue bool = false
+		r.overwrite = &defaultValue
 	}
 	if r.reviewed != nil {
-		localVarQueryParams.Add("reviewed", parameterToString(*r.reviewed, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "reviewed", r.reviewed, "form", "")
+	} else {
+		var defaultValue bool = false
+		r.reviewed = &defaultValue
 	}
 	if r.tagAdded != nil {
 		t := *r.tagAdded
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				localVarQueryParams.Add("tag_added", parameterToString(s.Index(i), "multi"))
+				parameterAddToHeaderOrQuery(localVarQueryParams, "tag_added", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			localVarQueryParams.Add("tag_added", parameterToString(t, "multi"))
+			parameterAddToHeaderOrQuery(localVarQueryParams, "tag_added", t, "form", "multi")
 		}
 	}
 	if r.tagUpdated != nil {
@@ -158,10 +164,10 @@ func (a *UploadAPIApiService) ImportLocalizationFileExecute(r ApiImportLocalizat
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				localVarQueryParams.Add("tag_updated", parameterToString(s.Index(i), "multi"))
+				parameterAddToHeaderOrQuery(localVarQueryParams, "tag_updated", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			localVarQueryParams.Add("tag_updated", parameterToString(t, "multi"))
+			parameterAddToHeaderOrQuery(localVarQueryParams, "tag_updated", t, "form", "multi")
 		}
 	}
 	if r.tagRemoved != nil {
@@ -169,10 +175,10 @@ func (a *UploadAPIApiService) ImportLocalizationFileExecute(r ApiImportLocalizat
 		if reflect.TypeOf(t).Kind() == reflect.Slice {
 			s := reflect.ValueOf(t)
 			for i := 0; i < s.Len(); i++ {
-				localVarQueryParams.Add("tag_removed", parameterToString(s.Index(i), "multi"))
+				parameterAddToHeaderOrQuery(localVarQueryParams, "tag_removed", s.Index(i).Interface(), "form", "multi")
 			}
 		} else {
-			localVarQueryParams.Add("tag_removed", parameterToString(t, "multi"))
+			parameterAddToHeaderOrQuery(localVarQueryParams, "tag_removed", t, "form", "multi")
 		}
 	}
 	// to determine the Content-Type header
@@ -197,15 +203,16 @@ func (a *UploadAPIApiService) ImportLocalizationFileExecute(r ApiImportLocalizat
 	var fileLocalVarFileBytes    []byte
 
 	fileLocalVarFormFileName = "file"
+	fileLocalVarFile := r.file
 
-	fileLocalVarFile := *r.file
 	if fileLocalVarFile != nil {
-		fbs, _ := ioutil.ReadAll(fileLocalVarFile)
+		fbs, _ := io.ReadAll(fileLocalVarFile)
+
 		fileLocalVarFileBytes = fbs
 		fileLocalVarFileName = fileLocalVarFile.Name()
 		fileLocalVarFile.Close()
+		formFiles = append(formFiles, formFile{fileBytes: fileLocalVarFileBytes, fileName: fileLocalVarFileName, formFileName: fileLocalVarFormFileName})
 	}
-	formFiles = append(formFiles, formFile{fileBytes: fileLocalVarFileBytes, fileName: fileLocalVarFileName, formFileName: fileLocalVarFormFileName})
 	if r.ctx != nil {
 		// API Key Authentication
 		if auth, ok := r.ctx.Value(ContextAPIKeys).(map[string]APIKey); ok {
@@ -230,9 +237,9 @@ func (a *UploadAPIApiService) ImportLocalizationFileExecute(r ApiImportLocalizat
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -249,7 +256,8 @@ func (a *UploadAPIApiService) ImportLocalizationFileExecute(r ApiImportLocalizat
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-			newErr.model = v
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
@@ -259,7 +267,8 @@ func (a *UploadAPIApiService) ImportLocalizationFileExecute(r ApiImportLocalizat
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
-			newErr.model = v
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
 		return localVarHTTPResponse, newErr

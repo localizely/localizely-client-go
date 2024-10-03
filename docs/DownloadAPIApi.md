@@ -1,10 +1,10 @@
-# \DownloadAPIApi
+# \DownloadAPIAPI
 
 All URIs are relative to *https://api.localizely.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetLocalizationFile**](DownloadAPIApi.md#GetLocalizationFile) | **Get** /v1/projects/{project_id}/files/download | Download translations for a language in a specified file format
+[**GetLocalizationFile**](DownloadAPIAPI.md#GetLocalizationFile) | **Get** /v1/projects/{project_id}/files/download | Download translations for a language in a specified file format
 
 
 
@@ -22,29 +22,29 @@ Download translations for a language in a specified file format
 package main
 
 import (
-    "context"
-    "fmt"
-    "os"
-    openapiclient "./openapi"
+	"context"
+	"fmt"
+	"os"
+	openapiclient "github.com/localizely/localizely-client-go"
 )
 
 func main() {
-    projectId := "projectId_example" // string | Project ID - Can be found on 'My projects' page
-    type_ := "type__example" // string | File format
-    branch := "branch_example" // string | Name of the branch to download file from. Only in case of activated branching feature. (optional)
-    langCodes := "langCodes_example" // string | Language to download, specified as language code. e.g. `en`, `en_GB` or `en-GB`. For multiple languages use comma separator. If omitted, all languages are downloaded. (optional)
-    javaPropertiesEncoding := "javaPropertiesEncoding_example" // string | (Only for Java .properties files download) Character encoding. Default is `latin_1`. (optional)
-    includeTags := []string{"Inner_example"} // []string | Optional list of tags to be downloaded. <br>If not set, all string keys will be considered for download. <br><br>Multiple tags can be defined in a following way: `&include_tags=ANDROID&include_tags=ANDROID_SPRINT05`. (optional)
-    excludeTags := []string{"Inner_example"} // []string | Optional list of tags to be excluded from download. <br>If not set, all string keys will be considered for download. <br><br> Multiple tags can be defined in a following way: `&exclude_tags=REMOVED&exclude_tags=REMOVED_SPRINT05`. (optional)
-    exportEmptyAs := "exportEmptyAs_example" // string | Optional. How you would like empty translations to be exported. Allowed values are `empty` to keep empty, `main` to replace with the main language value, or `skip` to omit. (optional) (default to "empty")
+	projectId := "projectId_example" // string | Project ID - Can be found on 'My projects' page
+	type_ := "type__example" // string | File format
+	branch := "branch_example" // string | Name of the branch to download file from. Only in case of activated branching feature. (optional)
+	langCodes := "langCodes_example" // string | Language to download, specified as language code. e.g. `en`, `en_GB` or `en-GB`. For multiple languages use comma separator. If omitted, all languages are downloaded. (optional)
+	javaPropertiesEncoding := "javaPropertiesEncoding_example" // string | (Only for Java .properties files download) Character encoding. Default is `latin_1`. (optional)
+	includeTags := []string{"Inner_example"} // []string | Optional list of tags to be downloaded. <br>If not set, all string keys will be considered for download. <br><br>Multiple tags can be defined in a following way: `&include_tags=ANDROID&include_tags=ANDROID_SPRINT05`. (optional)
+	excludeTags := []string{"Inner_example"} // []string | Optional list of tags to be excluded from download. <br>If not set, all string keys will be considered for download. <br><br> Multiple tags can be defined in a following way: `&exclude_tags=REMOVED&exclude_tags=REMOVED_SPRINT05`. (optional)
+	exportEmptyAs := "exportEmptyAs_example" // string | Optional. How you would like empty translations to be exported. Allowed values are `empty` to keep empty, `main` to replace with the main language value, or `skip` to omit. (optional) (default to "empty")
 
-    configuration := openapiclient.NewConfiguration()
-    apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.DownloadAPIApi.GetLocalizationFile(context.Background(), projectId).Type_(type_).Branch(branch).LangCodes(langCodes).JavaPropertiesEncoding(javaPropertiesEncoding).IncludeTags(includeTags).ExcludeTags(excludeTags).ExportEmptyAs(exportEmptyAs).Execute()
-    if err != nil {
-        fmt.Fprintf(os.Stderr, "Error when calling `DownloadAPIApi.GetLocalizationFile``: %v\n", err)
-        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
-    }
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	r, err := apiClient.DownloadAPIAPI.GetLocalizationFile(context.Background(), projectId).Type_(type_).Branch(branch).LangCodes(langCodes).JavaPropertiesEncoding(javaPropertiesEncoding).IncludeTags(includeTags).ExcludeTags(excludeTags).ExportEmptyAs(exportEmptyAs).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `DownloadAPIAPI.GetLocalizationFile``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
 }
 ```
 

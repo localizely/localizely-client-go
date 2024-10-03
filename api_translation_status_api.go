@@ -13,19 +13,19 @@ package localizely
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
 
-// TranslationStatusAPIApiService TranslationStatusAPIApi service
-type TranslationStatusAPIApiService service
+// TranslationStatusAPIAPIService TranslationStatusAPIAPI service
+type TranslationStatusAPIAPIService service
 
 type ApiGetTranslationStatusRequest struct {
 	ctx context.Context
-	ApiService *TranslationStatusAPIApiService
+	ApiService *TranslationStatusAPIAPIService
 	projectId string
 	branch *string
 }
@@ -47,7 +47,7 @@ GetTranslationStatus Get Translation Status for the project
  @param projectId Project ID - Can be found on 'My projects' page
  @return ApiGetTranslationStatusRequest
 */
-func (a *TranslationStatusAPIApiService) GetTranslationStatus(ctx context.Context, projectId string) ApiGetTranslationStatusRequest {
+func (a *TranslationStatusAPIAPIService) GetTranslationStatus(ctx context.Context, projectId string) ApiGetTranslationStatusRequest {
 	return ApiGetTranslationStatusRequest{
 		ApiService: a,
 		ctx: ctx,
@@ -57,7 +57,7 @@ func (a *TranslationStatusAPIApiService) GetTranslationStatus(ctx context.Contex
 
 // Execute executes the request
 //  @return ProjectStatusDto
-func (a *TranslationStatusAPIApiService) GetTranslationStatusExecute(r ApiGetTranslationStatusRequest) (*ProjectStatusDto, *http.Response, error) {
+func (a *TranslationStatusAPIAPIService) GetTranslationStatusExecute(r ApiGetTranslationStatusRequest) (*ProjectStatusDto, *http.Response, error) {
 	var (
 		localVarHTTPMethod   = http.MethodGet
 		localVarPostBody     interface{}
@@ -65,20 +65,20 @@ func (a *TranslationStatusAPIApiService) GetTranslationStatusExecute(r ApiGetTra
 		localVarReturnValue  *ProjectStatusDto
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TranslationStatusAPIApiService.GetTranslationStatus")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "TranslationStatusAPIAPIService.GetTranslationStatus")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
 	localVarPath := localBasePath + "/v1/projects/{project_id}/status"
-	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", url.PathEscape(parameterToString(r.projectId, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"project_id"+"}", url.PathEscape(parameterValueToString(r.projectId, "projectId")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
 	if r.branch != nil {
-		localVarQueryParams.Add("branch", parameterToString(*r.branch, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "branch", r.branch, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -121,9 +121,9 @@ func (a *TranslationStatusAPIApiService) GetTranslationStatusExecute(r ApiGetTra
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -140,7 +140,8 @@ func (a *TranslationStatusAPIApiService) GetTranslationStatusExecute(r ApiGetTra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-			newErr.model = v
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 404 {
@@ -150,7 +151,8 @@ func (a *TranslationStatusAPIApiService) GetTranslationStatusExecute(r ApiGetTra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
-			newErr.model = v
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
