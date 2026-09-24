@@ -1,7 +1,7 @@
 /*
 Localizely API
 
-<h2>Getting started</h2><p>Localizely API is built on <a href=\"https://en.wikipedia.org/wiki/Representational_state_transfer\" target=\"_blank\">REST</a>. <br>You can use this API for importing & exporting your localization files in order to automate the process with `curl` scripts or external <a href=\"https://en.wikipedia.org/wiki/Continuous_integration\" target=\"_blank\">CI</a> tools. <br>Response is returned in JSON form even in case of error. <br></p><p>If you Authenticate with your API token on this page by clicking \"Authorize\" button, you can make API calls directly from here with \"Try it out\", and generate such `curl` examples. </p><h2>API Authentication</h2><p>Authenticate your account by sending your API token as a request header `X-Api-Token`. <br>The token can be found under <a href=\"https://app.localizely.com/account\" target=\"_blank\">My Profile</a> page. <br>A user must have an Admin role in the project in order to access the project with his token. <br>API requests without authentication will fail.</p><p><b>Base url:</b> `https://api.localizely.com`</p>
+<h2>Getting started</h2><p>Localizely API is built on <a href=\"https://en.wikipedia.org/wiki/Representational_state_transfer\" target=\"_blank\">REST</a>. <br>You can use this API for importing & exporting your localization files in order to automate the process with `curl` scripts or external <a href=\"https://en.wikipedia.org/wiki/Continuous_integration\" target=\"_blank\">CI</a> tools. <br>Response is returned in JSON form even in case of error. <br></p><p>If you Authenticate with your API token on this page by clicking \"Authorize\" button, you can make API calls directly from here with \"Try it out\", and generate such `curl` examples. </p><h2>API Authentication</h2><p>Authenticate your account by sending your API token as a request header `X-Api-Token`. <br>The token can be found under <a href=\"https://app.localizely.com/account\" target=\"_blank\">My Profile</a> page. <br>A user must have an Admin role in the project in order to access the project with his token. <br>API requests without authentication will fail.</p><h2>Rate Limiting</h2><p>Access to all endpoints is limited to 400 requests per minute. This limit is applied per API token and per IP address. If you exceed the limit, a 429 HTTP status code will be returned. <br>If you should need higher rate limits, <a href=\"https://app.localizely.com/support\" target=\"_blank\">contact us</a>.</p><p><b>Base url:</b> `https://api.localizely.com`</p>
 
 API version: 1.2.1
 */
@@ -136,6 +136,10 @@ func typeCheckParameter(obj interface{}, expected string, name string) error {
 
 func parameterValueToString( obj interface{}, key string ) string {
 	if reflect.TypeOf(obj).Kind() != reflect.Ptr {
+		if actualObj, ok := obj.(interface{ GetActualInstanceValue() interface{} }); ok {
+			return fmt.Sprintf("%v", actualObj.GetActualInstanceValue())
+		}
+
 		return fmt.Sprintf("%v", obj)
 	}
 	var param,ok = obj.(MappedNullable)
@@ -439,6 +443,15 @@ func (c *APIClient) decode(v interface{}, b []byte, contentType string) (err err
 		*s = string(b)
 		return nil
 	}
+	if r, ok := v.(*io.Reader); ok {
+		*r = bytes.NewReader(b)
+		return nil
+	}
+	// Must stay before the JSON branch: json.Unmarshal would base64-decode into *[]byte.
+	if p, ok := v.(*[]byte); ok {
+		*p = b
+		return nil
+	}
 	if f, ok := v.(*os.File); ok {
 		f, err = os.CreateTemp("", "HttpClientFile")
 		if err != nil {
@@ -492,10 +505,7 @@ func addFile(w *multipart.Writer, fieldName, path string) error {
 	if err != nil {
 		return err
 	}
-	err = file.Close()
-	if err != nil {
-		return err
-	}
+	defer file.Close()
 
 	part, err := w.CreateFormFile(fieldName, filepath.Base(path))
 	if err != nil {

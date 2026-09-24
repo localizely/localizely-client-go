@@ -12,7 +12,11 @@ info:
     \ token can be found under <a href=\"https://app.localizely.com/account\" target=\"\
     _blank\">My Profile</a> page. <br>A user must have an Admin role in the project\
     \ in order to access the project with his token. <br>API requests without authentication\
-    \ will fail.</p><p><b>Base url:</b> `https://api.localizely.com`</p>"
+    \ will fail.</p><h2>Rate Limiting</h2><p>Access to all endpoints is limited to\
+    \ 400 requests per minute. This limit is applied per API token and per IP address.\
+    \ If you exceed the limit, a 429 HTTP status code will be returned. <br>If you\
+    \ should need higher rate limits, <a href=\"https://app.localizely.com/support\"\
+    \ target=\"_blank\">contact us</a>.</p><p><b>Base url:</b> `https://api.localizely.com`</p>"
   termsOfService: https://localizely.com/terms-of-service/
   title: Localizely API
   version: 1.2.1
@@ -62,13 +66,16 @@ paths:
         style: form
       - description: "If uploading translations, that are added, should be marked\
           \ as Reviewed. For uploading translations that are only modified it will\
-          \ have effect only if `overwrite` is set to `true`."
+          \ have effect only if `overwrite` is set to `true`. When omitted, file formats\
+          \ with a translation state (iOS xcstrings) set it per translation from that\
+          \ state (`translated` is reviewed, `needs_review` and `new` are not; in\
+          \ the main language only `needs_review` is not reviewed), other formats\
+          \ import as not reviewed."
         explode: true
         in: query
         name: reviewed
         required: false
         schema:
-          default: false
           type: boolean
         style: form
       - description: "Optional list of tags to add to new translations from uploading\
@@ -108,13 +115,13 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/importLocalizationFile_request'
+              $ref: "#/components/schemas/importLocalizationFile_request"
       responses:
         "400":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/InvalidImportFileErrorDto'
+                $ref: "#/components/schemas/InvalidImportFileErrorDto"
           description: |-
             Error codes:<br />&nbsp;<br />- `invalid_import_file` when file invalid. Returned with `errors` list<br />- `max_upload_size_exceeded` when uploading file exceeds size limit<br />- `upgrade_required` when uploading more string keys than accepted by owner's account plan limit<br />- `projects_limit_read_only` when project is in read-only state due to exceeded projects limit
             `'bad_request'` when request generally is not well formed
@@ -122,7 +129,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: "#/components/schemas/ErrorDto"
           description: Not Found
         "200":
           description: "OK, file uploaded"
@@ -167,7 +174,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: "#/components/schemas/ErrorDto"
           description: Error codes:<br />&nbsp;<br />- `bad_request` when request
             generally is not well formed<br />- `limit_reached` when project already
             has max allowed number of branches<br />- `projects_limit_read_only` when
@@ -176,7 +183,7 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: "#/components/schemas/ErrorDto"
           description: Not Found
         "200":
           description: "OK, created"
@@ -211,20 +218,20 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: "#/components/schemas/ErrorDto"
           description: Error codes:<br />&nbsp;<br />- `bad_request` when request
             generally is not well formed
         "404":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: "#/components/schemas/ErrorDto"
           description: Not Found
         "200":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ProjectStatusDto'
+                $ref: "#/components/schemas/ProjectStatusDto"
           description: "OK, data returned"
       security:
       - API auth: []
@@ -278,6 +285,7 @@ paths:
           - android_xml
           - ios_strings
           - ios_stringsdict
+          - ios_xcstrings
           - java_properties
           - rails_yaml
           - angular_xlf
@@ -346,15 +354,17 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ErrorDto'
-          description: Error codes:<br />&nbsp;<br />- `invalid_export_data_rails_yaml`
-            when data collision for yaml download<br />- `bad_request` when request
-            generally is not well formed
+                $ref: "#/components/schemas/ErrorDto"
+          description: "Error codes:<br />&nbsp;<br />- `file_download_excel_cell_too_long`\
+            \ when some translations exceed Excel cell limit (returns int parameter:\
+            \ 'errorData.cellCharsLimit')<br />- `invalid_export_data_rails_yaml`\
+            \ when data collision for yaml download<br />- `bad_request` when request\
+            \ generally is not well formed"
         "404":
           content:
             '*/*':
               schema:
-                $ref: '#/components/schemas/ErrorDto'
+                $ref: "#/components/schemas/ErrorDto"
           description: Not Found
         "200":
           description: "OK, file returned"
@@ -367,8 +377,8 @@ components:
   schemas:
     ErrorDto:
       example:
-        errorMessage: errorMessage
         errorCode: already_exists
+        errorMessage: errorMessage
         errorData:
           key: "{}"
       properties:
@@ -383,6 +393,7 @@ components:
           - bad_turnstile
           - bad_url
           - confirmation_invalid
+          - ownership_transfer_required
           - forbidden_email
           - main_locale_invalid
           - branching_disabled
@@ -399,15 +410,18 @@ components:
           - order_creation_still_processing
           - branching_not_supported
           - ota_not_supported
+          - qa_checks_not_supported
           - string_keys_limit
           - projects_limit
           - projects_limit_read_only
           - limit_reached
           - import_keys_limit_exceeded
           - max_upload_size_exceeded
+          - file_download_excel_cell_too_long
           - prevention_limit_reached
           - tags_prevention_limit_reached
           - string_key_not_found
+          - qa_checks_failed
           - merge_outdated
           - mt_locale_not_supported
           - mt_main_translation_empty
@@ -415,6 +429,13 @@ components:
           - mt_source_translation_too_long
           - mt_chars_missing
           - mt_no_selected_strings
+          - ait_locale_not_supported
+          - ait_main_translation_empty
+          - ait_main_translation_not_supported
+          - ait_source_translation_too_long
+          - ait_chars_missing
+          - ait_no_selected_strings
+          - ait_in_progress
           - tm_upload_file_invalid
           - tm_upload_file_max_entries_exceeded
           - tm_upload_file_version_not_supported
@@ -437,6 +458,7 @@ components:
           - github_config_file_missing
           - github_config_file_invalid
           - github_push_no_changes
+          - github_invalid_export_data
           - gitlab_not_supported
           - gitlab_token_invalid
           - gitlab_token_scope_invalid
@@ -446,6 +468,7 @@ components:
           - gitlab_config_file_missing
           - gitlab_config_file_invalid
           - gitlab_push_no_changes
+          - gitlab_invalid_export_data
           - bitbucket_not_supported
           - bitbucket_token_invalid
           - bitbucket_token_scope_invalid
@@ -455,11 +478,13 @@ components:
           - bitbucket_config_file_missing
           - bitbucket_config_file_invalid
           - bitbucket_push_no_changes
+          - bitbucket_invalid_export_data
           - aws_s3_not_supported
           - aws_s3_credentials_invalid
           - aws_s3_permissions_invalid
           - aws_s3_bucket_invalid
           - aws_s3_region_invalid
+          - join_request_already_pending
           - expired
           - unauthorized
           - unexpected_error
@@ -475,8 +500,8 @@ components:
     ImportFileError:
       example:
         line: 0
-        errorMessage: errorMessage
         position: 6
+        errorMessage: errorMessage
       properties:
         line:
           format: int32
@@ -489,17 +514,17 @@ components:
       type: object
     InvalidImportFileErrorDto:
       example:
-        errorMessage: errorMessage
         errorCode: already_exists
+        errorMessage: errorMessage
         errorData:
           key: "{}"
         errors:
         - line: 0
-          errorMessage: errorMessage
           position: 6
+          errorMessage: errorMessage
         - line: 0
-          errorMessage: errorMessage
           position: 6
+          errorMessage: errorMessage
       properties:
         errorCode:
           enum:
@@ -512,6 +537,7 @@ components:
           - bad_turnstile
           - bad_url
           - confirmation_invalid
+          - ownership_transfer_required
           - forbidden_email
           - main_locale_invalid
           - branching_disabled
@@ -528,15 +554,18 @@ components:
           - order_creation_still_processing
           - branching_not_supported
           - ota_not_supported
+          - qa_checks_not_supported
           - string_keys_limit
           - projects_limit
           - projects_limit_read_only
           - limit_reached
           - import_keys_limit_exceeded
           - max_upload_size_exceeded
+          - file_download_excel_cell_too_long
           - prevention_limit_reached
           - tags_prevention_limit_reached
           - string_key_not_found
+          - qa_checks_failed
           - merge_outdated
           - mt_locale_not_supported
           - mt_main_translation_empty
@@ -544,6 +573,13 @@ components:
           - mt_source_translation_too_long
           - mt_chars_missing
           - mt_no_selected_strings
+          - ait_locale_not_supported
+          - ait_main_translation_empty
+          - ait_main_translation_not_supported
+          - ait_source_translation_too_long
+          - ait_chars_missing
+          - ait_no_selected_strings
+          - ait_in_progress
           - tm_upload_file_invalid
           - tm_upload_file_max_entries_exceeded
           - tm_upload_file_version_not_supported
@@ -566,6 +602,7 @@ components:
           - github_config_file_missing
           - github_config_file_invalid
           - github_push_no_changes
+          - github_invalid_export_data
           - gitlab_not_supported
           - gitlab_token_invalid
           - gitlab_token_scope_invalid
@@ -575,6 +612,7 @@ components:
           - gitlab_config_file_missing
           - gitlab_config_file_invalid
           - gitlab_push_no_changes
+          - gitlab_invalid_export_data
           - bitbucket_not_supported
           - bitbucket_token_invalid
           - bitbucket_token_scope_invalid
@@ -584,11 +622,13 @@ components:
           - bitbucket_config_file_missing
           - bitbucket_config_file_invalid
           - bitbucket_push_no_changes
+          - bitbucket_invalid_export_data
           - aws_s3_not_supported
           - aws_s3_credentials_invalid
           - aws_s3_permissions_invalid
           - aws_s3_bucket_invalid
           - aws_s3_region_invalid
+          - join_request_already_pending
           - expired
           - unauthorized
           - unexpected_error
@@ -602,17 +642,17 @@ components:
           type: object
         errors:
           items:
-            $ref: '#/components/schemas/ImportFileError'
+            $ref: "#/components/schemas/ImportFileError"
           type: array
       type: object
     ProjectLocaleStatsDto:
       description: Translation status per language
       example:
-        reviewedProgress: 5
-        strings: 1
         langCode: langCode
         langName: langName
+        strings: 1
         reviewed: 5
+        reviewedProgress: 5
       properties:
         langCode:
           description: Language code (ie `en` or `en-US`)
@@ -635,19 +675,19 @@ components:
       type: object
     ProjectStatusDto:
       example:
-        reviewedProgress: 6
         strings: 0
+        reviewedProgress: 6
         languages:
-        - reviewedProgress: 5
-          strings: 1
-          langCode: langCode
+        - langCode: langCode
           langName: langName
-          reviewed: 5
-        - reviewedProgress: 5
           strings: 1
-          langCode: langCode
-          langName: langName
           reviewed: 5
+          reviewedProgress: 5
+        - langCode: langCode
+          langName: langName
+          strings: 1
+          reviewed: 5
+          reviewedProgress: 5
       properties:
         strings:
           description: Total number of string keys in the project
@@ -660,16 +700,16 @@ components:
         languages:
           description: Translation status per language
           items:
-            $ref: '#/components/schemas/ProjectLocaleStatsDto'
+            $ref: "#/components/schemas/ProjectLocaleStatsDto"
           type: array
       type: object
     importLocalizationFile_request:
       properties:
         file:
           description: "Uploading file. Supported following formats: `Flutter ARB,\
-            \ Android XML, iOS strings, iOS stringsdict, Angular XLF, Gettext PO,\
-            \ Gettext POT, Java properties, Ruby on Rails yaml, .NET resx, flat json,\
-            \ csv, Excel .xlsx, Excel .xls`"
+            \ Android XML, iOS strings, iOS stringsdict, iOS xcstrings, Angular XLF,\
+            \ Gettext PO, Gettext POT, Java properties, Ruby on Rails yaml, .NET resx,\
+            \ flat json, csv, Excel .xlsx, Excel .xls`"
           format: binary
           type: string
       required:

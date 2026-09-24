@@ -1,7 +1,7 @@
 /*
 Localizely API
 
-<h2>Getting started</h2><p>Localizely API is built on <a href=\"https://en.wikipedia.org/wiki/Representational_state_transfer\" target=\"_blank\">REST</a>. <br>You can use this API for importing & exporting your localization files in order to automate the process with `curl` scripts or external <a href=\"https://en.wikipedia.org/wiki/Continuous_integration\" target=\"_blank\">CI</a> tools. <br>Response is returned in JSON form even in case of error. <br></p><p>If you Authenticate with your API token on this page by clicking \"Authorize\" button, you can make API calls directly from here with \"Try it out\", and generate such `curl` examples. </p><h2>API Authentication</h2><p>Authenticate your account by sending your API token as a request header `X-Api-Token`. <br>The token can be found under <a href=\"https://app.localizely.com/account\" target=\"_blank\">My Profile</a> page. <br>A user must have an Admin role in the project in order to access the project with his token. <br>API requests without authentication will fail.</p><p><b>Base url:</b> `https://api.localizely.com`</p>
+<h2>Getting started</h2><p>Localizely API is built on <a href=\"https://en.wikipedia.org/wiki/Representational_state_transfer\" target=\"_blank\">REST</a>. <br>You can use this API for importing & exporting your localization files in order to automate the process with `curl` scripts or external <a href=\"https://en.wikipedia.org/wiki/Continuous_integration\" target=\"_blank\">CI</a> tools. <br>Response is returned in JSON form even in case of error. <br></p><p>If you Authenticate with your API token on this page by clicking \"Authorize\" button, you can make API calls directly from here with \"Try it out\", and generate such `curl` examples. </p><h2>API Authentication</h2><p>Authenticate your account by sending your API token as a request header `X-Api-Token`. <br>The token can be found under <a href=\"https://app.localizely.com/account\" target=\"_blank\">My Profile</a> page. <br>A user must have an Admin role in the project in order to access the project with his token. <br>API requests without authentication will fail.</p><h2>Rate Limiting</h2><p>Access to all endpoints is limited to 400 requests per minute. This limit is applied per API token and per IP address. If you exceed the limit, a 429 HTTP status code will be returned. <br>If you should need higher rate limits, <a href=\"https://app.localizely.com/support\" target=\"_blank\">contact us</a>.</p><p><b>Base url:</b> `https://api.localizely.com`</p>
 
 API version: 1.2.1
 */
@@ -45,7 +45,7 @@ func (r ApiImportLocalizationFileRequest) LangCode(langCode string) ApiImportLoc
 	return r
 }
 
-// Uploading file. Supported following formats: &#x60;Flutter ARB, Android XML, iOS strings, iOS stringsdict, Angular XLF, Gettext PO, Gettext POT, Java properties, Ruby on Rails yaml, .NET resx, flat json, csv, Excel .xlsx, Excel .xls&#x60;
+// Uploading file. Supported following formats: &#x60;Flutter ARB, Android XML, iOS strings, iOS stringsdict, iOS xcstrings, Angular XLF, Gettext PO, Gettext POT, Java properties, Ruby on Rails yaml, .NET resx, flat json, csv, Excel .xlsx, Excel .xls&#x60;
 func (r ApiImportLocalizationFileRequest) File(file *os.File) ApiImportLocalizationFileRequest {
 	r.file = file
 	return r
@@ -63,7 +63,7 @@ func (r ApiImportLocalizationFileRequest) Overwrite(overwrite bool) ApiImportLoc
 	return r
 }
 
-// If uploading translations, that are added, should be marked as Reviewed. For uploading translations that are only modified it will have effect only if &#x60;overwrite&#x60; is set to &#x60;true&#x60;.
+// If uploading translations, that are added, should be marked as Reviewed. For uploading translations that are only modified it will have effect only if &#x60;overwrite&#x60; is set to &#x60;true&#x60;. When omitted, file formats with a translation state (iOS xcstrings) set it per translation from that state (&#x60;translated&#x60; is reviewed, &#x60;needs_review&#x60; and &#x60;new&#x60; are not; in the main language only &#x60;needs_review&#x60; is not reviewed), other formats import as not reviewed.
 func (r ApiImportLocalizationFileRequest) Reviewed(reviewed bool) ApiImportLocalizationFileRequest {
 	r.reviewed = &reviewed
 	return r
@@ -140,13 +140,11 @@ func (a *UploadAPIAPIService) ImportLocalizationFileExecute(r ApiImportLocalizat
 		parameterAddToHeaderOrQuery(localVarQueryParams, "overwrite", r.overwrite, "form", "")
 	} else {
 		var defaultValue bool = false
+		parameterAddToHeaderOrQuery(localVarQueryParams, "overwrite", defaultValue, "form", "")
 		r.overwrite = &defaultValue
 	}
 	if r.reviewed != nil {
 		parameterAddToHeaderOrQuery(localVarQueryParams, "reviewed", r.reviewed, "form", "")
-	} else {
-		var defaultValue bool = false
-		r.reviewed = &defaultValue
 	}
 	if r.tagAdded != nil {
 		t := *r.tagAdded
